@@ -1,26 +1,27 @@
+import logo from './logo.svg';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { Button, Dropdown, Nav, Tab } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 
 function TextInput() {
   return (
-    <div class="container mt-4">
-      <div class="row">
+    <div className="container mt-4">
+      <div className="row">
         <section>
           <h2>Enter text to analyze</h2>
 
-          <div class="col-md-6">
+          <div className="col-md-6">
             <form>
               <div className="mb-3">
                 <label htmlFor="analysisTitle" className="form-label">Title:</label>
                 <input type="text" className="form-control" id="analysisTitle" />
               </div>
-              <div class="mb-3">
-                <label for="textArea" class="form-label">Enter Text:</label>
-                <textarea class="form-control" id="textArea" rows="5"></textarea>
+              <div className="mb-3">
+                <label htmlFor="textArea" className="form-label">Enter Text:</label>
+                <textarea className="form-control" id="textArea" rows={5}></textarea>
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" className="btn btn-primary">Submit</button>
             </form>
           </div>
         </section>
@@ -31,23 +32,23 @@ function TextInput() {
 
 function WordsSelector() {
   return (
-    <div class="container mt-4">
-      <div class="row">
+    <div className="container mt-4">
+      <div className="row">
         <section>
           <h2>Select words to analyze</h2>
 
 
-          <div class="col-md-6 text-left">
+          <div className="col-md-6 text-left">
             <p>
-              <button type="button" class="btn btn-primary">Храня</button>
-              <button type="button" class="btn btn-primary">убогое</button>
-              <button type="button" class="btn btn-success">молчанье</button>
+              <button type="button" className="btn btn-primary">Храня</button>
+              <button type="button" className="btn btn-primary">убогое</button>
+              <button type="button" className="btn btn-success">молчанье</button>
             </p>
             <p>
-              <button type="button" class="btn btn-primary">Над</button>
-              <button type="button" class="btn btn-success">сумраком</button>
-              <button type="button" class="btn btn-primary">гниющих</button>
-              <button type="button" class="btn btn-success">вод</button>
+              <button type="button" className="btn btn-primary">Над</button>
+              <button type="button" className="btn btn-success">сумраком</button>
+              <button type="button" className="btn btn-primary">гниющих</button>
+              <button type="button" className="btn btn-success">вод</button>
             </p>
             <p>
             </p>
@@ -60,9 +61,9 @@ function WordsSelector() {
 
 function WordsInitialAssociation() {
   return (
-    <div class="container mt-4">
-      <div class="row">
-        <div class="col-md-6">
+    <div className="container mt-4">
+      <div className="row">
+        <div className="col-md-6">
           <section>
             <h2>Associate each word with another and chouse a category</h2>
             <div>
@@ -112,13 +113,13 @@ function WordAssociation() {
   )
 }
 function WordsAssociation() {
-  const [key, setKey] = useState('concepts');
+  const [key, setKey] = useState<string | null>('concepts');
   return (
     <div className="container-sm mt-5">
       <div className="row">
         <div className="col-md-6">
           <h2>Associate each word with another until you will have 2-5 words in each category</h2>
-          <Tab.Container id="tabs" activeKey={key} onSelect={(k) => setKey(k)}>
+          <Tab.Container id="tabs" activeKey={key ?? undefined} onSelect={(k) => setKey(k)}>
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="nouns">Существительные</Nav.Link>
@@ -142,12 +143,12 @@ function WordsAssociation() {
               </Tab.Pane>
               <Tab.Pane eventKey="states">
                 <section>
-                  {/* Content for the "Состояния" tab */}
+                  {/* Content htmlFor the "Состояния" tab */}
                 </section>
               </Tab.Pane>
               <Tab.Pane eventKey="nouns">
                 <section>
-                  {/* Content for the "Существительные" tab */}
+                  {/* Content htmlFor the "Существительные" tab */}
                 </section>
               </Tab.Pane>
             </Tab.Content>
@@ -182,7 +183,7 @@ function CrossWordsAssociation() {
           </div>
 
           {/* Big Multiline Textbox on the Bottom */}
-          <textarea className="form-control" rows="4" placeholder="Type something..."></textarea>
+          <textarea className="form-control" rows={4} placeholder="Type something..."></textarea>
         </div>
       </div>
     </div>
@@ -208,7 +209,7 @@ function FinalCrossWordsAssociation() {
           </div>
 
           {/* Big Multiline Textbox on the Bottom */}
-          <textarea className="form-control" rows="4" placeholder="Type something..."></textarea>
+          <textarea className="form-control" rows={4} placeholder="Type something..."></textarea>
         </div>
       </div>
     </div>
