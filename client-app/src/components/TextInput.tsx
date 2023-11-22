@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { Button, Dropdown, Nav, Tab } from 'react-bootstrap';
-
 export default function TextInput() {
     return (
       <div className="container mt-4">

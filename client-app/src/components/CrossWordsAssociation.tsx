@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { Button, Dropdown, Nav, Tab } from 'react-bootstrap';
-
 export default function CrossWordsAssociation() {
     return (
       <div className="container-sm mt-5">
@@ -30,4 +27,4 @@ export default function CrossWordsAssociation() {
         </div>
       </div>
     );
-  };
+  }

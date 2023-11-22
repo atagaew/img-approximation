@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Button, Dropdown, Nav, Tab } from 'react-bootstrap';
+import { Dropdown} from 'react-bootstrap';
 
 export default function WordAssociation() {
     return (

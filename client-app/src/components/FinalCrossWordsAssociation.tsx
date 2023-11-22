@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-import { Button, Dropdown, Nav, Tab } from 'react-bootstrap';
 
 export default function FinalCrossWordsAssociation() {
   return (
@@ -25,4 +23,4 @@ export default function FinalCrossWordsAssociation() {
       </div>
     </div>
   );
-};
+}
