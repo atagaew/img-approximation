@@ -22,7 +22,8 @@ const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis,  initialAnalysis
         lines.forEach((line, lineNumber) => {
           const lineWords = line.split(/\s+/);
           lineWords.forEach((word) => {
-            words.push({ value: word, lineNumber: lineNumber + 1 });
+            word = word.replace(/^(\P{L}+)|(\P{L}+)$/gu, '');
+            words.push({ value: word, lineNumber: lineNumber + 1, isSelected: false });
           });
         });
         return words;

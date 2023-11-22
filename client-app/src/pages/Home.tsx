@@ -15,14 +15,14 @@ export default function Home() {
     })
     const onStartAnalysis = (analysis: WordAnalysis) => {
         // Handle the analysis logic here
-        console.log('Analysis started with data:', analysis);
         setAnalysis(analysis);
       };
       
+      console.log(analysis);
     return (
         <>
           <TextInput  onStartAnalysis={onStartAnalysis} initialAnalysisData={analysis}/>
-          <WordsSelector initialWordsToSelect={analysis.words}/>
+          <WordsSelector initialWordsToSelect={analysis.words} key={analysis.words.length}/>
           <WordsInitialAssociation />
           <WordsAssociation />
           <CrossWordsAssociation />

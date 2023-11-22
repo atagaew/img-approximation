@@ -1,10 +1,14 @@
 import { Word } from "../interfaces/Word";
+import React, { useState } from 'react';
+import { WordAnalysis } from "../interfaces/WordAnalysis";
 
 interface WordsSelectorProps {
     initialWordsToSelect: Word[];
 }
 
 const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) => {
+    const [selectedWords, setSelectedWords] = useState<Word[]>(initialWordsToSelect);
+
     const groupWordsByLine = (words: Word[]) => {
         return words.reduce((groupedWords, word) => {
             const lineNumber = word.lineNumber;
@@ -16,7 +20,16 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) =
         }, {} as Record<number, Word[]>);
     };
 
-    const wordsGrouped = groupWordsByLine(initialWordsToSelect);
+    const wordsGrouped = groupWordsByLine(selectedWords);
+    const onSelectWord = (selectedWord: Word) => {
+        setSelectedWords((prevSelectedWords) =>
+            {
+                console.log(prevSelectedWords)
+                return prevSelectedWords.map((word) => word.value === selectedWord.value ? { ...word, isSelected: !selectedWord.isSelected } : word);
+            }
+        );
+    };
+
     return (
         <div className="container mt-4">
             <div className="row">
@@ -31,8 +44,7 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) =
                                         <button
                                             key={word.value}
                                             type="button"
-                                            className="btn btn-light"
-                                        >
+                                            className={`btn ${word.isSelected ? 'btn-info' : 'btn-light'}`} onClick={() => onSelectWord(word)}>
                                             {word.value}
                                         </button>
                                     ))}
