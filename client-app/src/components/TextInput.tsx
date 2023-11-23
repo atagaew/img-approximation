@@ -3,6 +3,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Word } from '../interfaces/Word';
+import { WordCategory } from '../interfaces/WordCategory';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -15,19 +16,27 @@ interface TextInputProps {
 }
 
 
-const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis,  initialAnalysisData}) => {
+const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis, initialAnalysisData }) => {
     const extractWordsWithLineNumbers = (text: string): Word[] => {
         const words: Word[] = [];
         const lines = text.split('\n');
+        let id = 0;
         lines.forEach((line, lineNumber) => {
-          const lineWords = line.split(/\s+/);
-          lineWords.forEach((word) => {
-            word = word.replace(/^(\P{L}+)|(\P{L}+)$/gu, '');
-            words.push({ value: word, lineNumber: lineNumber + 1, isSelected: false });
-          });
+            const lineWords = line.split(/\s+/);
+            lineWords.forEach((word) => {
+                word = word.replace(/^(\P{L}+)|(\P{L}+)$/gu, '');
+                words.push({
+                    id: id,
+                    value: word, 
+                    lineNumber: lineNumber + 1, 
+                    isSelected: false,
+                    category: WordCategory.Nouns
+                });
+                id++;
+            });
         });
         return words;
-      };
+    };
 
     return (
         <div className="container mt-4">

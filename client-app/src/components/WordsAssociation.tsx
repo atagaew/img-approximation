@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Nav, Tab } from 'react-bootstrap';
 import WordAssociation from './Shared/WordAssociation';
+import { Association } from '../interfaces/Association';
 
 export default function WordsAssociation() {
     const [key, setKey] = useState<string | null>('concepts');
@@ -26,7 +27,7 @@ export default function WordsAssociation() {
                 <Tab.Pane eventKey="concepts">
                   <section>
                     <ul className="list-group">
-                      <WordAssociation />
+                      <WordAssociation association={null} allWords={[]} />
                       {/* Add more list items with additional dropdowns and words */}
                     </ul>
                   </section>

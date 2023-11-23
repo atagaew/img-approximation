@@ -4,10 +4,11 @@ import { WordAnalysis } from "../interfaces/WordAnalysis";
 
 interface WordsSelectorProps {
     initialWordsToSelect: Word[];
+    onInitialWordsSelected: (words: Word[]) => void;
 }
 
-const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) => {
-    const [selectedWords, setSelectedWords] = useState<Word[]>(initialWordsToSelect);
+const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect, onInitialWordsSelected }) => {
+    const [wordsToSelect, setWordsToSelect] = useState<Word[]>(initialWordsToSelect);
 
     const groupWordsByLine = (words: Word[]) => {
         return words.reduce((groupedWords, word) => {
@@ -20,13 +21,11 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) =
         }, {} as Record<number, Word[]>);
     };
 
-    const wordsGrouped = groupWordsByLine(selectedWords);
+    const wordsGrouped = groupWordsByLine(wordsToSelect);
     const onSelectWord = (selectedWord: Word) => {
-        setSelectedWords((prevSelectedWords) =>
-            {
-                console.log(prevSelectedWords)
-                return prevSelectedWords.map((word) => word.value === selectedWord.value ? { ...word, isSelected: !selectedWord.isSelected } : word);
-            }
+        setWordsToSelect((prevWordsToSelect) => {
+            return prevWordsToSelect.map((word) => word.value === selectedWord.value ? { ...word, isSelected: !selectedWord.isSelected } : word);
+        }
         );
     };
 
@@ -36,15 +35,16 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) =
                 <section>
                     <h2>Select words to analyze</h2>
                     <div className="col-md-6 text-left">
-                        {Object.keys(wordsGrouped).map((lineNumberString) => {
+                        {Object.keys(wordsGrouped).map(lineNumberString => {
                             const lineNumber = parseInt(lineNumberString, 10);
                             return (
                                 <p key={lineNumber}>
-                                    {wordsGrouped[lineNumber].map((word) => (
+                                    {wordsGrouped[lineNumber].map(word => (
                                         <button
                                             key={word.value}
                                             type="button"
-                                            className={`btn ${word.isSelected ? 'btn-info' : 'btn-light'}`} onClick={() => onSelectWord(word)}>
+                                            className={`btn ${word.isSelected ? 'btn-info' : 'btn-light'}`}
+                                            onClick={() => onSelectWord(word)}>
                                             {word.value}
                                         </button>
                                     ))}
@@ -54,7 +54,18 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect }) =
                     </div>
                 </section>
             </div>
+            <div className="row">
+                <div className="col-md-1 text-left">
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
+                        onClick={() => onInitialWordsSelected(wordsToSelect.filter(word => word.isSelected))}>
+                        Continue
+                    </button>
+                </div>
+            </div>
         </div>
+
     )
 }
 
