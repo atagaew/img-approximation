@@ -44,3 +44,7 @@
 .btn {
   margin-right: 5px; /* Adjust the margin as needed */
 }
+.spaced-list-items > li {
+  margin-bottom: 8px; /* Change this value as needed */
+  margin-top: 8px; /* Change this value as needed */
+}

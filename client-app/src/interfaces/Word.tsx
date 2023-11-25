@@ -6,5 +6,6 @@ export interface Word {
     lineNumber: number;
     isSelected: boolean;
     category: WordCategory;
+    referencedWords: Word[]
 }
 

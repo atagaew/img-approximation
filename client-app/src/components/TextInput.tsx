@@ -30,7 +30,8 @@ const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis, initialAnalysisD
                     value: word, 
                     lineNumber: lineNumber + 1, 
                     isSelected: false,
-                    category: WordCategory.Nouns
+                    category: WordCategory.Nouns,
+                    referencedWords: []
                 });
                 id++;
             });

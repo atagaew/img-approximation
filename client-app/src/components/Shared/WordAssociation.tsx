@@ -10,19 +10,26 @@ interface WordAssociationProps {
 
 const WordAssociation: React.FC<WordAssociationProps> = ({ association, allWords }) => {
   const [selectedWord, setSelectedWord] = useState(association?.targetWord);
+  const [selectedCategory, setSelectedCategory] = useState(association?.sourceWord.category);
   const handleDropdownSelect = (selectedValue: string | null) => {
     setSelectedWord(allWords.find(word => word.value === selectedValue));
   };
 
   return (
-    <li className="list-group-item d-flex justify-content-between align-items-center">
+    <li className="d-flex justify-content-between align-items-center">
       <div>
         <span>{association?.sourceWord.value} {association?.sourceWord.id}</span>
       </div>
       <div>
+        <span>&rarr;</span>
+      </div>
+
+      <div>
         <Dropdown onSelect={handleDropdownSelect}>
           <Dropdown.Toggle variant="secondary" id="dropdown2">
-            {`${selectedWord?.value} ${selectedWord?.id}`}
+            {
+              selectedWord ? (`${selectedWord.value} ${selectedWord.id}`) : "Select Association"
+            }
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {allWords.map(word => (
