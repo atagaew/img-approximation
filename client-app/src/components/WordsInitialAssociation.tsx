@@ -7,7 +7,8 @@ const WordsInitialAssociation: React.FC<{
   wordsToAssociate: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
   onNewWordAdded: (wordText: string) => void;
-}> = ({ wordsToAssociate, onAssociationSelected, onNewWordAdded }) => {
+  onWordCategorySelected: (word:Word, wordCategory: WordCategory) => void;
+}> = ({ wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected }) => {
   //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
   const [newWordText, setNewWordText] = useState('');
@@ -44,7 +45,7 @@ const WordsInitialAssociation: React.FC<{
             <div>
               <ul className="list-group spaced-list-items">
                 {sortedWordsToAssociate?.map((wordToAssociate) =>
-                  <WordAssociation allWords={wordsToAssociate} word={wordToAssociate} key={wordToAssociate.id} onAssociationSelected={onAssociationSelected} />
+                  <WordAssociation allWords={wordsToAssociate} word={wordToAssociate} key={wordToAssociate.id} onAssociationSelected={onAssociationSelected} onWordCategorySelected={onWordCategorySelected} />
                 )}
               </ul>
             </div>

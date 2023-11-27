@@ -2,34 +2,37 @@ import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Word } from '../../interfaces/Word';
 import { useState } from 'react';
+import { WordCategory, WordCategoryDescriptions } from '../../interfaces/WordCategory';
 
-const WordTitle = (word: Word|null, defaultValue?: string): string => {
-  return word ? `${word.value} ${word.id}` : (defaultValue ? defaultValue : "Not Set");
-};
 
 const WordAssociation: React.FC<{
   word: Word;
   allWords: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
-}> = ({ word, allWords, onAssociationSelected }) => {
-  const [selectedCategory, setSelectedCategory] = useState(word);
-  const handleDropdownSelect = (selectedValue: string | null) => {
-    onAssociationSelected(word, allWords.find((word: Word) => word.value === selectedValue) as Word);
+  onWordCategorySelected: (word:Word, WordCategory: WordCategory) => void;
+}> = ({ word, allWords, onAssociationSelected, onWordCategorySelected }) => {
+  
+
+
+  const wordTitle = (word: Word | null, defaultValue?: string): string => {
+    return word ? `${word.value} ${word.id}` : (defaultValue ? defaultValue : "Not Set");
   };
 
   return (
     <li className="d-flex justify-content-between align-items-center">
       <div>
-        <span>{WordTitle(word)}</span>
+        <span>{wordTitle(word)}</span>
       </div>
       <div>
         <span>&rarr;</span>
       </div>
 
       <div>
-        <Dropdown onSelect={handleDropdownSelect}>
+        <Dropdown onSelect={(selectedValue: string | null) => {
+          onAssociationSelected(word, allWords.find((word: Word) => word.value === selectedValue) as Word);
+        }}>
           <Dropdown.Toggle variant="secondary" id="dropdown2">
-            {WordTitle(word, "Select Association")}
+            {wordTitle(word, "Select Association")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {allWords.map(word => (
@@ -41,14 +44,18 @@ const WordAssociation: React.FC<{
         </Dropdown>
       </div>
       <div>
-        <Dropdown>
+        <Dropdown onSelect={(selectedCategory: string | null) => {
+          onWordCategorySelected(word, selectedCategory as WordCategory);
+        }}>
           <Dropdown.Toggle variant="secondary" id="dropdown1">
-            Chouse Category
+            {WordCategoryDescriptions[word.category]}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item href="#">Action 1.1</Dropdown.Item>
-            <Dropdown.Item href="#">Action 1.2</Dropdown.Item>
-            <Dropdown.Item href="#">Action 1.3</Dropdown.Item>
+            {Object.keys(WordCategoryDescriptions).filter((key) => isNaN(Number(key))).map((actionKey) => (
+              <Dropdown.Item href="#" key={actionKey}  eventKey={actionKey}>
+                {WordCategoryDescriptions[actionKey as keyof typeof WordCategoryDescriptions]}
+              </Dropdown.Item>
+            ))}
           </Dropdown.Menu>
         </Dropdown>
       </div>

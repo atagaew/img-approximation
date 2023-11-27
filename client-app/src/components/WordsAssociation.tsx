@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Nav, Tab } from 'react-bootstrap';
 import WordAssociation from './Shared/WordAssociation';
 import { Word } from '../interfaces/Word';
+import { WordCategory } from '../interfaces/WordCategory';
 
 //todo refactor or remove because it looks exactly as WordsInitialAssocaition
 const WordsAssociation: React.FC<{
   wordsToAssociate: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
-}> = ({ wordsToAssociate, onAssociationSelected }) => {
+  onWordCategorySelected: (word:Word, wordCategory: WordCategory) => void;
+}> = ({ wordsToAssociate, onAssociationSelected, onWordCategorySelected }) => {
     const [key, setKey] = useState<string | null>('concepts');
     return (
       <div className="container-sm mt-5">
@@ -31,8 +33,11 @@ const WordsAssociation: React.FC<{
                 <Tab.Pane eventKey="concepts">
                   <section>
                     <ul className="list-group">
-                      <WordAssociation word={Word.constructor()} allWords={wordsToAssociate} onAssociationSelected={onAssociationSelected} />
-                      {/* Add more list items with additional dropdowns and words */}
+                      <WordAssociation 
+                        word={Word.constructor()} 
+                        allWords={wordsToAssociate} 
+                        onAssociationSelected={onAssociationSelected} 
+                        onWordCategorySelected={onWordCategorySelected} />
                     </ul>
                   </section>
                 </Tab.Pane>
