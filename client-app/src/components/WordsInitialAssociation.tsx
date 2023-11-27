@@ -1,55 +1,29 @@
 import { useState, ChangeEvent } from 'react';
-import { Association } from '../interfaces/Association';
 import { Word } from '../interfaces/Word';
 import WordAssociation from './Shared/WordAssociation';
 import { WordCategory } from '../interfaces/WordCategory';
 
-interface WordsInitialAssociationProps {
-  initialAssociations: Association[] | null;
-  allWords: Word[];
-}
-const WordsInitialAssociation: React.FC<WordsInitialAssociationProps> = ({ initialAssociations, allWords }) => {
-  const [associations, setAssociations] = useState<Association[]>(initialAssociations || []);
-  const [wordsToAssociate, setWordsToAssociate] = useState<Word[]>(allWords);
+const WordsInitialAssociation: React.FC<{
+  wordsToAssociate: Word[];
+  onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
+  onNewWordAdded: (wordText: string) => void;
+}> = ({ wordsToAssociate, onAssociationSelected, onNewWordAdded }) => {
+  //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
   const [newWordText, setNewWordText] = useState('');
 
-  let sortedAssociations: Association[] | null = associations;
-  if (initialAssociations && alphabeticalSorting)
-    sortedAssociations = [...initialAssociations].sort((a, b) => a.sourceWord.value.localeCompare(b.sourceWord.value));
+
+  let sortedWordsToAssociate: Word[] | null = wordsToAssociate;
+  if (sortedWordsToAssociate && alphabeticalSorting) {
+    sortedWordsToAssociate = [...wordsToAssociate].sort((a, b) => a.value.localeCompare(b.value));
+  }
 
   const handleNewWordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewWordText(event.target.value);
   }
 
-  const getMaxIdAndLineNumber = (words: Word[]): Word | null => {
-    let maxWord: Word | null = null;
-
-    for (const word of words) {
-      if (maxWord === null || word.id > maxWord.id || word.lineNumber > maxWord.lineNumber) {
-        maxWord = word;
-      }
-    }
-
-    return maxWord;
-  };
   const onAddNewWord = (): void => {
-    const maxWord = getMaxIdAndLineNumber(wordsToAssociate);
-    const newWord = {
-      id: maxWord ? maxWord.id + 1 : 0,
-      value: newWordText,
-      lineNumber: maxWord ? maxWord.lineNumber : 1,
-      isSelected: true,
-      category: WordCategory.Nouns,
-      referencedWords: []
-    };
-    setAssociations([
-      ...associations,
-      {
-        sourceWord: newWord,
-        targetWord: null,
-      }]);
-    setWordsToAssociate([...wordsToAssociate, newWord]);
+    onNewWordAdded(newWordText);
     setNewWordText('');
   }
 
@@ -69,8 +43,8 @@ const WordsInitialAssociation: React.FC<WordsInitialAssociationProps> = ({ initi
             </label>
             <div>
               <ul className="list-group spaced-list-items">
-                {sortedAssociations?.map((association) =>
-                  <WordAssociation association={association} allWords={wordsToAssociate} key={association.sourceWord.id} />
+                {sortedWordsToAssociate?.map((wordToAssociate) =>
+                  <WordAssociation allWords={wordsToAssociate} word={wordToAssociate} key={wordToAssociate.id} onAssociationSelected={onAssociationSelected} />
                 )}
               </ul>
             </div>
@@ -93,7 +67,7 @@ const WordsInitialAssociation: React.FC<WordsInitialAssociationProps> = ({ initi
           <button
             type="submit"
             className="btn btn-primary"
-            onClick={() => onAddNewWord()}>
+            onClick={onAddNewWord}>
             Add
           </button>
         </div>

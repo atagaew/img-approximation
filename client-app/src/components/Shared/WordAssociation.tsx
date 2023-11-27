@@ -1,24 +1,26 @@
+import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { Association } from '../../interfaces/Association';
 import { Word } from '../../interfaces/Word';
 import { useState } from 'react';
 
-interface WordAssociationProps {
-  association: Association | null;
-  allWords: Word[];
-}
+const WordTitle = (word: Word|null, defaultValue?: string): string => {
+  return word ? `${word.value} ${word.id}` : (defaultValue ? defaultValue : "Not Set");
+};
 
-const WordAssociation: React.FC<WordAssociationProps> = ({ association, allWords }) => {
-  const [selectedWord, setSelectedWord] = useState(association?.targetWord);
-  const [selectedCategory, setSelectedCategory] = useState(association?.sourceWord.category);
+const WordAssociation: React.FC<{
+  word: Word;
+  allWords: Word[];
+  onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
+}> = ({ word, allWords, onAssociationSelected }) => {
+  const [selectedCategory, setSelectedCategory] = useState(word);
   const handleDropdownSelect = (selectedValue: string | null) => {
-    setSelectedWord(allWords.find(word => word.value === selectedValue));
+    onAssociationSelected(word, allWords.find((word: Word) => word.value === selectedValue) as Word);
   };
 
   return (
     <li className="d-flex justify-content-between align-items-center">
       <div>
-        <span>{association?.sourceWord.value} {association?.sourceWord.id}</span>
+        <span>{WordTitle(word)}</span>
       </div>
       <div>
         <span>&rarr;</span>
@@ -27,9 +29,7 @@ const WordAssociation: React.FC<WordAssociationProps> = ({ association, allWords
       <div>
         <Dropdown onSelect={handleDropdownSelect}>
           <Dropdown.Toggle variant="secondary" id="dropdown2">
-            {
-              selectedWord ? (`${selectedWord.value} ${selectedWord.id}`) : "Select Association"
-            }
+            {WordTitle(word, "Select Association")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {allWords.map(word => (

@@ -5,10 +5,8 @@ import WordsInitialAssociation from "../components/WordsInitialAssociation";
 import WordsSelector from "../components/WordsSelector";
 import FinalCrossWordsAssociation from "../components/FinalCrossWordsAssociation";
 import { WordAnalysis } from "../interfaces/WordAnalysis";
-import { Association } from "../interfaces/Association";
 import { useState } from 'react';
 import { Word } from "../interfaces/Word";
-import WordAssociation from "../components/Shared/WordAssociation";
 
 export default function Home() {
     const [analysis, setAnalysis] = useState<WordAnalysis>(WordAnalysis.createEmpty())
@@ -19,24 +17,56 @@ export default function Home() {
     const onInitialWordsSelected = (words: Word[]) => {
         setAnalysis({
                 ...analysis,
-                selectedWords: [...words].sort((a, b) => a.value.localeCompare(b.value)),
-                iterations: [
-                    { 
-                        id: 0, 
-                        associations: words.map((word: Word): Association => { 
-                            return { 
-                                sourceWord: word, 
-                                targetWord: word };
-                         }) }]
+                selectedWords: [...words],
             });
     }
-    const initialAssociations = analysis.iterations[0]?.associations;
+
+    const onAssociationSelected = (sourceWord: Word, targetWord: Word) => {
+        const newSourceWord = {...sourceWord};
+        const newTargetWord = {...targetWord};
+        newSourceWord.associatedWord = newTargetWord;
+        newTargetWord.referencingWords = [...newTargetWord.referencingWords, newSourceWord];
+
+        setAnalysis(
+            {
+                ...analysis,
+                selectedWords: analysis.selectedWords.map(word => {
+                    if (word.id === newSourceWord.id)
+                        return newSourceWord;
+
+                    if (word.id === newTargetWord.id)
+                        return newTargetWord;
+                    
+                    return word;
+                }),
+            }
+        )
+    }
+
+    const onNewWordAdded = (text: string) => {
+        let maxWord: Word | null = null;
+    
+        for (const word of analysis.selectedWords) {
+          if (maxWord === null || word.id > maxWord.id || word.lineNumber > maxWord.lineNumber) {
+            maxWord = word;
+          }
+        }
+    
+        const word = Word.create(maxWord ? maxWord.id + 1 : 0, maxWord ? maxWord.lineNumber : 1, text);
+        setAnalysis(
+            {
+                ...analysis,
+                selectedWords: [...analysis.selectedWords, word],
+            }
+        )
+    }
+
     return (
         <>
             <TextInput onStartAnalysis={onStartAnalysis} initialAnalysisData={analysis} />
             <WordsSelector initialWordsToSelect={analysis.words} key={analysis.words.length}  onInitialWordsSelected={onInitialWordsSelected}/>
-            <WordsInitialAssociation initialAssociations={initialAssociations} allWords={analysis.selectedWords}/>
-            <WordsAssociation />
+            <WordsInitialAssociation wordsToAssociate={analysis.selectedWords} onAssociationSelected={onAssociationSelected} onNewWordAdded={onNewWordAdded}/>
+            <WordsAssociation  key={`wia${analysis.selectedWords.length}`} wordsToAssociate={analysis.selectedWords} onAssociationSelected={onAssociationSelected}/>
             <CrossWordsAssociation />
             <FinalCrossWordsAssociation />
         </>

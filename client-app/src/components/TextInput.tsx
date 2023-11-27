@@ -23,16 +23,9 @@ const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis, initialAnalysisD
         let id = 0;
         lines.forEach((line, lineNumber) => {
             const lineWords = line.split(/\s+/);
-            lineWords.forEach((word) => {
-                word = word.replace(/^(\P{L}+)|(\P{L}+)$/gu, '');
-                words.push({
-                    id: id,
-                    value: word, 
-                    lineNumber: lineNumber + 1, 
-                    isSelected: false,
-                    category: WordCategory.Nouns,
-                    referencedWords: []
-                });
+            lineWords.forEach((wordText) => {
+                wordText = wordText.replace(/^(\P{L}+)|(\P{L}+)$/gu, '');
+                words.push(Word.create(id, lineNumber + 1, wordText));
                 id++;
             });
         });
@@ -80,7 +73,7 @@ const TextInput: React.FC<TextInputProps> = ({ onStartAnalysis, initialAnalysisD
                                     <ErrorMessage name="text" component="div" className="text-danger" />
                                 </div>
                                 <button type="submit" className="btn btn-primary">
-                                    Submit
+                                    Continue
                                 </button>
                             </Form>
                         </Formik>
