@@ -44,7 +44,7 @@ export default function Home() {
         )
     }
 
-    const onNewWordAdded = (text: string) => {
+    const onNewWordAdded = (text: string, category: WordCategory) => {
         let maxWord: Word | null = null;
 
         for (const word of analysis.selectedWords) {
@@ -53,7 +53,7 @@ export default function Home() {
             }
         }
 
-        const word = Word.create(maxWord ? maxWord.id + 1 : 0, maxWord ? maxWord.lineNumber : 1, text);
+        const word = Word.create(maxWord ? maxWord.id + 1 : 0, maxWord ? maxWord.lineNumber : 1, text, category);
         setAnalysis(
             {
                 ...analysis,

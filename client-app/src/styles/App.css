@@ -48,3 +48,7 @@
   margin-bottom: 8px; /* Change this value as needed */
   margin-top: 8px; /* Change this value as needed */
 }
+.sort-label {
+  white-space: nowrap;
+  margin-right: 8px;
+}

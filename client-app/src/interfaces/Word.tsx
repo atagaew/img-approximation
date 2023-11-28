@@ -22,13 +22,13 @@ export class Word {
         this.associatedWord = null;
     }
 
-    static create(id: number, lineNumber: number, value: string): Word {
+    static create(id: number, lineNumber: number, value: string, category: WordCategory): Word {
         return new Word(
             id,
             value,
             lineNumber + 1,
             false,
-            WordCategory.Nouns,
+            category,
             []
         );
     }

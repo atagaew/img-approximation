@@ -1,20 +1,25 @@
 import { useState, ChangeEvent } from 'react';
 import { Word } from '../interfaces/Word';
 import WordAssociation from './Shared/WordAssociation';
+import WordCategorySelector from './Shared/WordCategorySelector';
 import { WordCategory } from '../interfaces/WordCategory';
 
 const WordsInitialAssociation: React.FC<{
   wordsToAssociate: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
-  onNewWordAdded: (wordText: string) => void;
-  onWordCategorySelected: (word:Word, wordCategory: WordCategory) => void;
+  onNewWordAdded: (wordText: string, category: WordCategory) => void;
+  onWordCategorySelected: (word: Word, wordCategory: WordCategory) => void;
 }> = ({ wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected }) => {
   //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
+  const [currectCategory, setCurrentCategory] = useState(WordCategory.Nouns);
   const [newWordText, setNewWordText] = useState('');
 
 
   let sortedWordsToAssociate: Word[] | null = wordsToAssociate;
+  if (sortedWordsToAssociate) {
+    sortedWordsToAssociate = sortedWordsToAssociate.filter(word => word.category === currectCategory)
+  }
   if (sortedWordsToAssociate && alphabeticalSorting) {
     sortedWordsToAssociate = [...wordsToAssociate].sort((a, b) => a.value.localeCompare(b.value));
   }
@@ -23,9 +28,15 @@ const WordsInitialAssociation: React.FC<{
     setNewWordText(event.target.value);
   }
 
-  const onAddNewWord = (): void => {
-    onNewWordAdded(newWordText);
+  const onAddNewWord = (event: React.KeyboardEvent | React.FormEvent): void => {
+    onNewWordAdded(newWordText, currectCategory);
     setNewWordText('');
+    event.preventDefault();
+  }
+
+  const onFilterByCategoryChanged = (category: WordCategory) => {
+    console.log(category);
+    setCurrentCategory(category);
   }
 
   return (
@@ -34,14 +45,22 @@ const WordsInitialAssociation: React.FC<{
         <div className="col-md-6">
           <section>
             <h2>Associate each word with another and chouse a category</h2>
-            <label className="ml-2">
-              <input
-                type="checkbox"
-                checked={alphabeticalSorting}
-                onChange={() => setAlphabeticalSorting(!alphabeticalSorting)}
-              />
-              &nbsp;Sort Alphabetically
-            </label>
+            <div className="row mb-3 align-items-center">
+              <div className="col-md-7 d-flex align-items-center"> {/* Adjusted for automatic width */}
+                <span className="mr-2 sort-label">Filter by category</span> <WordCategorySelector onWordCategorySelected={onFilterByCategoryChanged} category={currectCategory}  ></WordCategorySelector>
+              </div>
+
+              <div className="col-md-5 col-lg-3 d-flex align-items-center"> {/* Adjusted for automatic width */}
+                <span className="mr-2 sort-label">Sort Alphabetically</span>
+                <input
+                  type="checkbox"
+                  checked={alphabeticalSorting}
+                  onChange={() => setAlphabeticalSorting(!alphabeticalSorting)}
+                />
+
+
+              </div>
+            </div>
             <div>
               <ul className="list-group spaced-list-items">
                 {sortedWordsToAssociate?.map((wordToAssociate) =>
@@ -53,25 +72,28 @@ const WordsInitialAssociation: React.FC<{
         </div>
       </div>
       <div className="row mb-3">
-        <div className="col-md-5"> {/* Adjusted for automatic width */}
-          <input
-            type="text"
-            className="form-control"
-            id="exampleTextBox"
-            placeholder="Enter new word"
-            value={newWordText}
-            onChange={handleNewWordChange}
-          />
-        </div>
+        <form onSubmit={onAddNewWord} className="col-md-6"> {/* Wrapping elements in form */}
+          <div className="row">
+            <div className="col-md-10">
+              <input
+                type="text"
+                className="form-control"
+                id="exampleTextBox"
+                placeholder="Enter new word"
+                value={newWordText}
+                onChange={handleNewWordChange}
+              />
+            </div>
 
-        <div className="col-md-1"> {/* Adjusted for automatic width */}
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={onAddNewWord}>
-            Add
-          </button>
-        </div>
+            <div className="col-md-2">
+              <button
+                type="submit"
+                className="btn btn-primary">
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
 
     </div>

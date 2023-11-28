@@ -2,16 +2,17 @@ import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Word } from '../../interfaces/Word';
 import { useState } from 'react';
-import { WordCategory, WordCategoryDescriptions } from '../../interfaces/WordCategory';
+import { WordCategory } from '../../interfaces/WordCategory';
+import WordCategorySelector  from './WordCategorySelector';
 
 
 const WordAssociation: React.FC<{
   word: Word;
   allWords: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
-  onWordCategorySelected: (word:Word, WordCategory: WordCategory) => void;
+  onWordCategorySelected: (word: Word, WordCategory: WordCategory) => void;
 }> = ({ word, allWords, onAssociationSelected, onWordCategorySelected }) => {
-  
+
 
 
   const wordTitle = (word: Word | null, defaultValue?: string): string => {
@@ -44,20 +45,7 @@ const WordAssociation: React.FC<{
         </Dropdown>
       </div>
       <div>
-        <Dropdown onSelect={(selectedCategory: string | null) => {
-          onWordCategorySelected(word, selectedCategory as WordCategory);
-        }}>
-          <Dropdown.Toggle variant="secondary" id="dropdown1">
-            {WordCategoryDescriptions[word.category]}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {Object.keys(WordCategoryDescriptions).filter((key) => isNaN(Number(key))).map((actionKey) => (
-              <Dropdown.Item href="#" key={actionKey}  eventKey={actionKey}>
-                {WordCategoryDescriptions[actionKey as keyof typeof WordCategoryDescriptions]}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
+        <WordCategorySelector onWordCategorySelected={(category) => {onWordCategorySelected(word, category)}} category={word.category}  />
       </div>
     </li>
 
