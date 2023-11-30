@@ -5,11 +5,13 @@ import WordCategorySelector from './Shared/WordCategorySelector';
 import { WordCategory } from '../interfaces/WordCategory';
 
 const WordsInitialAssociation: React.FC<{
+  round: number,
   wordsToAssociate: Word[];
   onAssociationSelected: (sourceWord: Word, targetWord: Word) => void;
   onNewWordAdded: (wordText: string, category: WordCategory) => void;
   onWordCategorySelected: (word: Word, wordCategory: WordCategory) => void;
-}> = ({ wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected }) => {
+  onNextRoundClick: () => void;
+}> = ({ round, wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected, onNextRoundClick }) => {
   //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
   const [currectCategory, setCurrentCategory] = useState(WordCategory.Nouns);
@@ -35,7 +37,6 @@ const WordsInitialAssociation: React.FC<{
   }
 
   const onFilterByCategoryChanged = (category: WordCategory) => {
-    console.log(category);
     setCurrentCategory(category);
   }
 
@@ -44,7 +45,8 @@ const WordsInitialAssociation: React.FC<{
       <div className="row mb-3">
         <div className="col-md-6">
           <section>
-            <h2>Associate each word with another and chouse a category</h2>
+            <h2>Round {round}</h2>
+            <h3>Associate each word with another and chouse a category</h3>
             <div className="row mb-3 align-items-center">
               <div className="col-md-7 d-flex align-items-center"> {/* Adjusted for automatic width */}
                 <span className="mr-2 sort-label">Filter by category</span> <WordCategorySelector onWordCategorySelected={onFilterByCategoryChanged} category={currectCategory}  ></WordCategorySelector>
@@ -64,7 +66,12 @@ const WordsInitialAssociation: React.FC<{
             <div>
               <ul className="list-group spaced-list-items">
                 {sortedWordsToAssociate?.map((wordToAssociate) =>
-                  <WordAssociation allWords={wordsToAssociate} word={wordToAssociate} key={wordToAssociate.id} onAssociationSelected={onAssociationSelected} onWordCategorySelected={onWordCategorySelected} />
+                  <WordAssociation 
+                    allWords={wordsToAssociate} 
+                    word={wordToAssociate} 
+                    key={wordToAssociate.id} 
+                    onAssociationSelected={onAssociationSelected} 
+                    onWordCategorySelected={onWordCategorySelected} />
                 )}
               </ul>
             </div>
@@ -95,6 +102,15 @@ const WordsInitialAssociation: React.FC<{
           </div>
         </form>
       </div>
+      <div className="row">
+            <div className="col-md-2">
+              <button
+                type="submit"
+                className="btn btn-primary" onClick={onNextRoundClick}>
+                Next Round
+              </button>
+            </div>
+          </div>      
 
     </div>
   )

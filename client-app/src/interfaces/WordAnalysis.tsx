@@ -5,6 +5,7 @@ export class WordAnalysis {
     text = '';
     words: Word[] = [];
     selectedWords: Word[] = [];
+    round = 1;
 
     static createEmpty(): WordAnalysis {
         return new WordAnalysis();

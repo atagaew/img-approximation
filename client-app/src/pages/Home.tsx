@@ -1,6 +1,5 @@
 import CrossWordsAssociation from "../components/CrossWordsAssociation";
 import TextInput from "../components/TextInput";
-import WordsAssociation from "../components/WordsAssociation";
 import WordsInitialAssociation from "../components/WordsInitialAssociation";
 import WordsSelector from "../components/WordsSelector";
 import FinalCrossWordsAssociation from "../components/FinalCrossWordsAssociation";
@@ -25,9 +24,11 @@ export default function Home() {
     const onAssociationSelected = (sourceWord: Word, targetWord: Word) => {
         const newSourceWord = { ...sourceWord };
         const newTargetWord = { ...targetWord };
+
+        console.log(newSourceWord);
+        console.log(newTargetWord);
         newSourceWord.associatedWord = newTargetWord;
         newTargetWord.referencingWords = [...newTargetWord.referencingWords, newSourceWord];
-
         setAnalysis(
             {
                 ...analysis,
@@ -72,12 +73,53 @@ export default function Home() {
         )
     };
 
+    const onNextRoundClick = () => {
+        setAnalysis(
+            {
+                ...analysis,
+                round: analysis.round + 1
+            }
+        )
+    }
+
+    const selectedWords = [];
+    const wordSet = new Set();
+    
+    for (let word of analysis.selectedWords) {
+        for (let depthIndex = 1; depthIndex < analysis.round; depthIndex++) {
+            if (word.associatedWord) {
+                console.log('Associated word')
+                console.log(word);
+                const wordObj = analysis.selectedWords.find(allWord => word.associatedWord && allWord.id === word.associatedWord.id);
+                word = wordObj ? wordObj : word;
+            }
+            else {
+                break;
+            }
+        }
+        const wordKey = word.id; 
+        if (!wordSet.has(wordKey)) {
+            console.log('Adding word')
+            console.log(word);
+            selectedWords.push(word);
+            wordSet.add(wordKey); 
+        }
+    }
+
+    console.log(`Round ${analysis.round}`);
+    console.log(selectedWords);
+    console.log(analysis.selectedWords);
     return (
         <>
             <TextInput onStartAnalysis={onStartAnalysis} initialAnalysisData={analysis} />
             <WordsSelector initialWordsToSelect={analysis.words} key={analysis.words.length} onInitialWordsSelected={onInitialWordsSelected} />
-            <WordsInitialAssociation wordsToAssociate={analysis.selectedWords} onAssociationSelected={onAssociationSelected} onNewWordAdded={onNewWordAdded} onWordCategorySelected={onWordCategorySelected} />
-            {/* <WordsAssociation  key={`wia${analysis.selectedWords.length}`} wordsToAssociate={analysis.selectedWords} onAssociationSelected={onAssociationSelected}/> */}
+            <WordsInitialAssociation
+                round={analysis.round} 
+                wordsToAssociate={selectedWords} 
+                onAssociationSelected={onAssociationSelected} 
+                onNewWordAdded={onNewWordAdded} 
+                onWordCategorySelected={onWordCategorySelected} 
+                onNextRoundClick={onNextRoundClick} />
             <CrossWordsAssociation />
             <FinalCrossWordsAssociation />
         </>

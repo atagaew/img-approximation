@@ -44,3 +44,10 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Feature things
+- Automatically group duplicates once words was selected
+- Ability to clear and start from the beginning without resetting the ui
+- Ability to search associations by typing in
+- Calculate word vielocity
+- Bug on round 1 items disappearing
