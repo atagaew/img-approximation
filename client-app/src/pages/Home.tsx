@@ -24,12 +24,29 @@ export default function Home() {
     const onAssociationSelected = (sourceWord: Word, targetWord: Word) => {
         const newSourceWord = { ...sourceWord };
         const newTargetWord = { ...targetWord };
+        let oldTarget:Word|undefined;
 
         console.log(newSourceWord);
         console.log(newTargetWord);
+        const oldAssociatedWordId = newSourceWord.associatedWordId
+        
+
         newSourceWord.associatedWordId = newTargetWord.id;
         newSourceWord.associationRound = analysis.round;
+
         newTargetWord.referencingWordIds = [...newTargetWord.referencingWordIds, newSourceWord.id];
+
+        // decreasing weight of old referenced word because the word is reassigning to another word
+        if (oldAssociatedWordId) {
+            oldTarget = analysis.selectedWords.find(selectedWord => selectedWord.id === oldAssociatedWordId);
+            if (oldTarget) {
+                oldTarget = {...oldTarget, 
+                    weight: oldTarget.weight - newSourceWord.weight}
+            }
+        }
+        // then increasing weight of new target word
+        newTargetWord.weight += newSourceWord.weight;
+
         setAnalysis(
             {
                 ...analysis,
@@ -39,6 +56,9 @@ export default function Home() {
 
                     if (word.id === newTargetWord.id)
                         return newTargetWord;
+
+                    if (oldTarget && word.id === oldTarget.id)
+                        return oldTarget;
 
                     return word;
                 }),

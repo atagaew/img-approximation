@@ -15,7 +15,7 @@ const WordAssociation: React.FC<{
   const sortedWords = [...allWords].sort((a, b) => a.value.localeCompare(b.value)).filter(w => w.category === word.category);
 
   const wordTitle = (word: Word | null | undefined, defaultValue?: string): React.ReactNode => {
-    return (<>{word?.value} <sub>({word?.lineNumber},{word?.wordNumber})</sub> - {word?.referencingWordIds.length}</>);
+    return (<>{word?.value} <sub>({word?.lineNumber},{word?.wordNumber})</sub> - {word?.weight}</>);
   };
 
   return (

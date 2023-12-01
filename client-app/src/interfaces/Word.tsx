@@ -15,6 +15,7 @@ export class Word {
     
     //round where association was set
     associationRound = 0;
+    weight = 1;
 
     constructor(id = 0, value = '', lineNumber = 0, wordNumber = 0, isSelected = false, category = WordCategory.Nouns, association:number[] = []) {
         this.id = id;
