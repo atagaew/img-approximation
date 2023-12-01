@@ -54,7 +54,7 @@ export default function Home() {
             }
         }
 
-        const word = Word.create(maxWord ? maxWord.id + 1 : 0, maxWord ? maxWord.lineNumber : 1, text, category);
+        const word = Word.create(maxWord ? maxWord.id + 1 : 0, maxWord ? maxWord.lineNumber : 1, maxWord ? maxWord.wordNumber + 1 : 1, text, category);
         setAnalysis(
             {
                 ...analysis,

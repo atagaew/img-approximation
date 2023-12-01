@@ -12,11 +12,10 @@ const WordAssociation: React.FC<{
   onWordCategorySelected: (word: Word, WordCategory: WordCategory) => void;
 }> = ({ word, allWords, onAssociationSelected, onWordCategorySelected }) => {
 
+  const sortedWords = [...allWords].sort((a, b) => a.value.localeCompare(b.value)).filter(w => w.category === word.category);
 
-  const sortedWords = [...allWords].sort((a, b) => a.value.localeCompare(b.value));
-
-  const wordTitle = (word: Word | null, defaultValue?: string): string => {
-    return word ? `${word.value} ${word.id}` : (defaultValue ? defaultValue : "Not Set");
+  const wordTitle = (word: Word | null, defaultValue?: string): React.ReactNode => {
+    return (<>{word?.value} <sub>({word?.lineNumber},{word?.wordNumber})</sub></>);
   };
 
   return (
@@ -43,12 +42,12 @@ const WordAssociation: React.FC<{
           }
         }}>
           <Dropdown.Toggle variant="secondary" id="dropdown2">
-            {wordTitle(word.associatedWord, wordTitle(word))}
+            {word.associatedWord ? wordTitle(word.associatedWord, '') : wordTitle(word, '')} - {word.referencingWords.length}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {sortedWords.map(word => (
               <Dropdown.Item key={word.id} eventKey={JSON.stringify({ value: word.value, id: word.id })}>
-                {word.value} {word.id}
+                {wordTitle(word, '')}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>

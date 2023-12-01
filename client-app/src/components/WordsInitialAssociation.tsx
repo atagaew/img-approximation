@@ -23,7 +23,7 @@ const WordsInitialAssociation: React.FC<{
     sortedWordsToAssociate = sortedWordsToAssociate.filter(word => word.category === currectCategory)
   }
   if (sortedWordsToAssociate && alphabeticalSorting) {
-    sortedWordsToAssociate = [...wordsToAssociate].sort((a, b) => a.value.localeCompare(b.value));
+    sortedWordsToAssociate = [...sortedWordsToAssociate].sort((a, b) => a.value.localeCompare(b.value));
   }
 
   const handleNewWordChange = (event: ChangeEvent<HTMLInputElement>) => {
