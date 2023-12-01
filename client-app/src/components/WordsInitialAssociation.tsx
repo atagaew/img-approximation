@@ -11,7 +11,8 @@ const WordsInitialAssociation: React.FC<{
   onNewWordAdded: (wordText: string, category: WordCategory) => void;
   onWordCategorySelected: (word: Word, wordCategory: WordCategory) => void;
   onNextRoundClick: () => void;
-}> = ({ round, wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected, onNextRoundClick }) => {
+  onGenerateCrossWordsAssocationsClick: () => void;
+}> = ({ round, wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected, onNextRoundClick, onGenerateCrossWordsAssocationsClick }) => {
   //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
   const [currectCategory, setCurrentCategory] = useState(WordCategory.Nouns);
@@ -66,11 +67,11 @@ const WordsInitialAssociation: React.FC<{
             <div>
               <ul className="list-group spaced-list-items">
                 {sortedWordsToAssociate?.map((wordToAssociate) =>
-                  <WordAssociation 
-                    allWords={wordsToAssociate} 
-                    word={wordToAssociate} 
-                    key={wordToAssociate.id} 
-                    onAssociationSelected={onAssociationSelected} 
+                  <WordAssociation
+                    allWords={wordsToAssociate}
+                    word={wordToAssociate}
+                    key={wordToAssociate.id}
+                    onAssociationSelected={onAssociationSelected}
                     onWordCategorySelected={onWordCategorySelected} />
                 )}
               </ul>
@@ -103,14 +104,20 @@ const WordsInitialAssociation: React.FC<{
         </form>
       </div>
       <div className="row">
-            <div className="col-md-2">
-              <button
-                type="submit"
-                className="btn btn-primary" onClick={onNextRoundClick}>
-                Next Round
-              </button>
-            </div>
-          </div>      
+        <div className="col-md-7">
+          <button
+            type="submit"
+            className="btn btn-primary" onClick={onNextRoundClick}>
+            Next Round
+          </button>
+          <button
+            type="submit"
+            className="btn btn-secondary" onClick={onGenerateCrossWordsAssocationsClick}>
+            Generate associations
+          </button>
+
+        </div>
+      </div>
 
     </div>
   )

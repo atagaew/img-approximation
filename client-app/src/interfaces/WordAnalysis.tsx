@@ -1,4 +1,5 @@
 import { Word } from "./Word";
+import { WordsDependencyExplanation } from "./WordsDependencyExplanation";
 
 export class WordAnalysis {
     title = '';
@@ -6,8 +7,10 @@ export class WordAnalysis {
     words: Word[] = [];
     selectedWords: Word[] = [];
     round = 1;
+    wordsDependency: WordsDependencyExplanation[] = [];
 
     static createEmpty(): WordAnalysis {
         return new WordAnalysis();
     }
 }
+

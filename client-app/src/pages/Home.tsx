@@ -7,6 +7,8 @@ import { WordAnalysis } from "../interfaces/WordAnalysis";
 import { useState } from 'react';
 import { Word } from "../interfaces/Word";
 import { WordCategory } from "../interfaces/WordCategory";
+import { WordsDependencyExplanation } from "../interfaces/WordsDependencyExplanation";
+import { number } from "yup";
 
 export default function Home() {
     const [analysis, setAnalysis] = useState<WordAnalysis>(WordAnalysis.createEmpty())
@@ -24,12 +26,10 @@ export default function Home() {
     const onAssociationSelected = (sourceWord: Word, targetWord: Word) => {
         const newSourceWord = { ...sourceWord };
         const newTargetWord = { ...targetWord };
-        let oldTarget:Word|undefined;
+        let oldTarget: Word | undefined;
 
-        console.log(newSourceWord);
-        console.log(newTargetWord);
         const oldAssociatedWordId = newSourceWord.associatedWordId
-        
+
 
         newSourceWord.associatedWordId = newTargetWord.id;
         newSourceWord.associationRound = analysis.round;
@@ -40,8 +40,10 @@ export default function Home() {
         if (oldAssociatedWordId) {
             oldTarget = analysis.selectedWords.find(selectedWord => selectedWord.id === oldAssociatedWordId);
             if (oldTarget) {
-                oldTarget = {...oldTarget, 
-                    weight: oldTarget.weight - newSourceWord.weight}
+                oldTarget = {
+                    ...oldTarget,
+                    weight: oldTarget.weight - newSourceWord.weight
+                }
             }
         }
         // then increasing weight of new target word
@@ -103,47 +105,82 @@ export default function Home() {
         )
     }
 
-    const selectedWords = [];
-    const wordSet = new Set();
-    
-    for (let word of analysis.selectedWords) {
-        for (let depthIndex = 1; depthIndex < analysis.round; depthIndex++) {
-            if (word.associatedWordId && word.associationRound < analysis.round) {
-                console.log('Associated word')
-                console.log(word);
-                const wordObj = analysis.selectedWords.find(allWord => 
-                    word.associatedWordId 
-                    && allWord.id === word.associatedWordId);
-                word = wordObj ? wordObj : word;
-            }
-            else {
-                break;
-            }
+    const onGenerateCrossWordsAssocationsClick = () => {
+        const wordsDependencies: WordsDependencyExplanation[] = [];
+        const finalWords = getWordsForCurrrentRound(analysis.round, analysis.selectedWords);
+
+        for (const word of finalWords) {
+            const wordsDependency = new WordsDependencyExplanation(word.id, finalWords.filter(finalWord => finalWord.id !== word.id).map(finalWord => finalWord.id)) ;
+            wordsDependencies.push(wordsDependency);
         }
-        const wordKey = word.id; 
-        if (!wordSet.has(wordKey)) {
-            console.log('Adding word')
-            console.log(word);
-            selectedWords.push(word);
-            wordSet.add(wordKey); 
-        }
+        setAnalysis(
+            {
+                ...analysis,
+                wordsDependency: wordsDependencies
+            }
+        )
+
     }
 
-    console.log(`Round ${analysis.round}`);
-    console.log(selectedWords);
-    console.log(analysis.selectedWords);
+    const getWordsForCurrrentRound = (round: number, allAvailableWords: Word[]) => {
+        const selectedWords = [];
+        const wordSet = new Set();
+
+        for (let word of allAvailableWords) {
+            for (let depthIndex = 1; depthIndex < round; depthIndex++) {
+                if (word.associatedWordId && word.associationRound < round) {
+                    const wordObj = allAvailableWords.find(allWord =>
+                        word.associatedWordId
+                        && allWord.id === word.associatedWordId);
+                    word = wordObj ? wordObj : word;
+                }
+                else {
+                    break;
+                }
+            }
+            const wordKey = word.id;
+            if (!wordSet.has(wordKey)) {
+                selectedWords.push(word);
+                wordSet.add(wordKey);
+            }
+        }
+
+        return selectedWords;
+    }
+
+    const onExplanationChange = (wordId: number, explanation: string) => {
+        setAnalysis(
+            {
+                ...analysis,
+                wordsDependency: [...analysis.wordsDependency].map(wd => wd.mainWordId === wordId ? { ...wd, explanation: explanation } : wd)
+            }
+        )
+
+    }
+
+
+    const selectedWords = getWordsForCurrrentRound(analysis.round, analysis.selectedWords);
+    const wordsToAssociate = new Map<number, Word>();
+    selectedWords.forEach(word => {
+        wordsToAssociate.set(word.id, word);
+    });
+
     return (
         <>
             <TextInput onStartAnalysis={onStartAnalysis} initialAnalysisData={analysis} />
             <WordsSelector initialWordsToSelect={analysis.words} key={analysis.words.length} onInitialWordsSelected={onInitialWordsSelected} />
             <WordsInitialAssociation
-                round={analysis.round} 
-                wordsToAssociate={selectedWords} 
-                onAssociationSelected={onAssociationSelected} 
-                onNewWordAdded={onNewWordAdded} 
-                onWordCategorySelected={onWordCategorySelected} 
-                onNextRoundClick={onNextRoundClick} />
-            <CrossWordsAssociation />
+                round={analysis.round}
+                wordsToAssociate={selectedWords}
+                onAssociationSelected={onAssociationSelected}
+                onNewWordAdded={onNewWordAdded}
+                onWordCategorySelected={onWordCategorySelected}
+                onNextRoundClick={onNextRoundClick}
+                onGenerateCrossWordsAssocationsClick={onGenerateCrossWordsAssocationsClick} />
+            <CrossWordsAssociation 
+                wordsDependency={analysis.wordsDependency} 
+                wordsToAssociate={wordsToAssociate} 
+                onExplanationChange={onExplanationChange} />
             <FinalCrossWordsAssociation />
         </>
     );
