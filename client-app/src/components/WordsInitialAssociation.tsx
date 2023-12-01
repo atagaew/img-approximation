@@ -41,9 +41,9 @@ const WordsInitialAssociation: React.FC<{
   }
 
   return (
-    <div className="container mt-4">
+    <div className="container">
       <div className="row mb-3">
-        <div className="col-md-6">
+        <div className="col-md-7">
           <section>
             <h2>Round {round}</h2>
             <h3>Associate each word with another and chouse a category</h3>

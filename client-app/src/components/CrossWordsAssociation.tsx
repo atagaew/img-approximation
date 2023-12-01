@@ -22,7 +22,7 @@ export default function CrossWordsAssociation() {
             </div>
   
             {/* Big Multiline Textbox on the Bottom */}
-            <textarea className="form-control" rows={4} placeholder="Type something..."></textarea>
+            <textarea className="form-control" rows={4} placeholder="Все дело в том что..."></textarea>
           </div>
         </div>
       </div>

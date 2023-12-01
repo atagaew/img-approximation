@@ -41,7 +41,7 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect, onI
                                 <p key={lineNumber}>
                                     {wordsGrouped[lineNumber].map(word => (
                                         <button
-                                            key={word.value}
+                                            key={word.id}
                                             type="button"
                                             className={`btn ${word.isSelected ? 'btn-info' : 'btn-light'}`}
                                             onClick={() => onSelectWord(word)}>

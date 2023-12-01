@@ -27,8 +27,9 @@ export default function Home() {
 
         console.log(newSourceWord);
         console.log(newTargetWord);
-        newSourceWord.associatedWord = newTargetWord;
-        newTargetWord.referencingWords = [...newTargetWord.referencingWords, newSourceWord];
+        newSourceWord.associatedWordId = newTargetWord.id;
+        newSourceWord.associationRound = analysis.round;
+        newTargetWord.referencingWordIds = [...newTargetWord.referencingWordIds, newSourceWord.id];
         setAnalysis(
             {
                 ...analysis,
@@ -87,10 +88,12 @@ export default function Home() {
     
     for (let word of analysis.selectedWords) {
         for (let depthIndex = 1; depthIndex < analysis.round; depthIndex++) {
-            if (word.associatedWord) {
+            if (word.associatedWordId && word.associationRound < analysis.round) {
                 console.log('Associated word')
                 console.log(word);
-                const wordObj = analysis.selectedWords.find(allWord => word.associatedWord && allWord.id === word.associatedWord.id);
+                const wordObj = analysis.selectedWords.find(allWord => 
+                    word.associatedWordId 
+                    && allWord.id === word.associatedWordId);
                 word = wordObj ? wordObj : word;
             }
             else {

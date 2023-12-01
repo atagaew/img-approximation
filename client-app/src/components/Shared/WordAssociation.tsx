@@ -14,8 +14,8 @@ const WordAssociation: React.FC<{
 
   const sortedWords = [...allWords].sort((a, b) => a.value.localeCompare(b.value)).filter(w => w.category === word.category);
 
-  const wordTitle = (word: Word | null, defaultValue?: string): React.ReactNode => {
-    return (<>{word?.value} <sub>({word?.lineNumber},{word?.wordNumber})</sub></>);
+  const wordTitle = (word: Word | null | undefined, defaultValue?: string): React.ReactNode => {
+    return (<>{word?.value} <sub>({word?.lineNumber},{word?.wordNumber})</sub> - {word?.referencingWordIds.length}</>);
   };
 
   return (
@@ -42,7 +42,7 @@ const WordAssociation: React.FC<{
           }
         }}>
           <Dropdown.Toggle variant="secondary" id="dropdown2">
-            {word.associatedWord ? wordTitle(word.associatedWord, '') : wordTitle(word, '')} - {word.referencingWords.length}
+            {word.associatedWordId ? wordTitle(allWords.find(associatedWord => associatedWord.id === word.associatedWordId) , '') : wordTitle(word, '')}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {sortedWords.map(word => (
