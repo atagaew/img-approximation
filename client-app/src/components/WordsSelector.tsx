@@ -59,6 +59,7 @@ const WordsSelector: React.FC<WordsSelectorProps> = ({ initialWordsToSelect, onI
                     <button
                         type="submit"
                         className="btn btn-primary"
+                        disabled={!wordsToSelect.some(word => word.isSelected)}
                         onClick={() => onInitialWordsSelected(wordsToSelect.filter(word => word.isSelected))}>
                         Continue
                     </button>

@@ -21,8 +21,8 @@ const CrossWordsAssociation: React.FC<{
   return (
     <div className="container-sm mt-5">
       <div className="row">
-        <div className="col-md-6">
-          <h2>Describe a word on the left using words on the rigth</h2>
+        <div className="col-md-8">
+          <h2>Describe a word on the left using words on the right</h2>
         </div>
       </div>
       <div className="accordion col-md-8 mb-2" id="accordionExample">
@@ -32,7 +32,7 @@ const CrossWordsAssociation: React.FC<{
               key={wd.mainWordId}
               mainWord={wordsToAssociate.get(wd.mainWordId)!}
               explanation={wd.explanation}
-              associatedWords={wd.otherWordsIds.map(owd => { return wordsToAssociate.get(owd)! })}
+              associatedWords={wd.otherWordsIds.map(owd => { return wordsToAssociate.get(owd)! }).filter(Boolean)}
               isAccordionOpen={isAccordionOpen}
               handleAccordionClick={handleAccordionClick}
               onExplanationChange={onExplanationChange}
@@ -41,12 +41,8 @@ const CrossWordsAssociation: React.FC<{
         })}
       </div>
       <div className="row">
-        <div className="col-md-2">
-          <button
-            type="submit"
-            className="btn btn-primary">
-            Next Round
-          </button>
+        <div className="col-md-7">
+          <button type="button" className="btn btn-primary">Back</button>
         </div>
       </div>
 

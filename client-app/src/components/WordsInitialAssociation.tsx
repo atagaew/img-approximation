@@ -32,9 +32,11 @@ const WordsInitialAssociation: React.FC<{
   }
 
   const onAddNewWord = (event: React.KeyboardEvent | React.FormEvent): void => {
+    event.preventDefault();
+    if (!newWordText)
+      return;
     onNewWordAdded(newWordText, currectCategory);
     setNewWordText('');
-    event.preventDefault();
   }
 
   const onFilterByCategoryChanged = (category: WordCategory) => {
@@ -46,8 +48,7 @@ const WordsInitialAssociation: React.FC<{
       <div className="row mb-3">
         <div className="col-md-7">
           <section>
-            <h2>Round {round}</h2>
-            <h3>Associate each word with another and chouse a category</h3>
+            <h2>Associate each word with another and chouse a category</h2>
             <div className="row mb-3 align-items-center">
               <div className="col-md-7 d-flex align-items-center"> {/* Adjusted for automatic width */}
                 <span className="mr-2 sort-label">Filter by category</span> <WordCategorySelector onWordCategorySelected={onFilterByCategoryChanged} category={currectCategory}  ></WordCategorySelector>
@@ -108,7 +109,7 @@ const WordsInitialAssociation: React.FC<{
           <button
             type="submit"
             className="btn btn-primary" onClick={onNextRoundClick}>
-            Next Round
+            Next Round - {round + 1 }
           </button>
           <button
             type="submit"

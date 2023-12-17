@@ -10,6 +10,9 @@ export const CrossWordsAssociationItem: React.FC<{
   onExplanationChange: (wordId: number, explanation: string) => void;
 }> = ({ mainWord, associatedWords, explanation, isAccordionOpen, handleAccordionClick, onExplanationChange }) => {
 
+  if (!mainWord)
+    return null;
+  
   return (<div className="accordion-item">
     <h2 className="accordion-header" id="headingOne">
       <button
@@ -46,12 +49,12 @@ export const CrossWordsAssociationItem: React.FC<{
     >
       <div className="accordion-body">
         <div className="row">
-          <div className="mb-3">
-            <button className="btn btn-primary">{mainWord.value}</button> &rarr;&nbsp;
-            {associatedWords.map(owd => <button className="btn btn-secondary">{owd.value}</button>)}
+          <div className="mb-3 d-inline-flex flex-wrap gap-2">
+            <button className="btn btn-dark">{mainWord.value}</button> &rarr;&nbsp;
+            {associatedWords.map(owd => <button className="btn btn-light">{owd.value}</button>)}
           </div>
         </div>
-        <div className="row">
+        <div className="row mb-3">
           <textarea
             className="form-control"
             rows={4}
@@ -59,6 +62,11 @@ export const CrossWordsAssociationItem: React.FC<{
             value={explanation}
             onChange={(event) => { onExplanationChange(mainWord.id, event.target.value); }}>
           </textarea>
+        </div>
+        <div className="row">
+          <div className="col-md-7">
+            <button type="button" className="btn btn-primary">Save as final</button>
+          </div>
         </div>
       </div>
     </div>

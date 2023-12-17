@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { Word } from "../interfaces/Word";
 import { WordCategory } from "../interfaces/WordCategory";
 import { WordsDependencyExplanation } from "../interfaces/WordsDependencyExplanation";
-import { number } from "yup";
 
 export default function Home() {
     const [analysis, setAnalysis] = useState<WordAnalysis>(WordAnalysis.createEmpty())
