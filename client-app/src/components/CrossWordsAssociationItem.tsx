@@ -8,7 +8,8 @@ export const CrossWordsAssociationItem: React.FC<{
   isAccordionOpen: (wordId: number) => boolean;
   handleAccordionClick: (wordId: number) => void;
   onExplanationChange: (wordId: number, explanation: string) => void;
-}> = ({ mainWord, associatedWords, explanation, isAccordionOpen, handleAccordionClick, onExplanationChange }) => {
+  onUseTextAsFinalIdea: (text: string) => void;
+}> = ({ mainWord, associatedWords, explanation, isAccordionOpen, handleAccordionClick, onExplanationChange, onUseTextAsFinalIdea }) => {
 
   if (!mainWord)
     return null;
@@ -65,7 +66,7 @@ export const CrossWordsAssociationItem: React.FC<{
         </div>
         <div className="row">
           <div className="col-md-7">
-            <button type="button" className="btn btn-primary">Save as final</button>
+            <button type="button" className="btn btn-primary" onClick={() => onUseTextAsFinalIdea(explanation)}>Save as final</button>
           </div>
         </div>
       </div>

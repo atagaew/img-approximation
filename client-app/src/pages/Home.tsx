@@ -2,15 +2,46 @@ import CrossWordsAssociation from "../components/CrossWordsAssociation";
 import TextInput from "../components/TextInput";
 import WordsInitialAssociation from "../components/WordsInitialAssociation";
 import WordsSelector from "../components/WordsSelector";
-import FinalCrossWordsAssociation from "../components/FinalCrossWordsAssociation";
-import { WordAnalysis } from "../interfaces/WordAnalysis";
-import { useState } from 'react';
-import { Word } from "../interfaces/Word";
-import { WordCategory } from "../interfaces/WordCategory";
-import { WordsDependencyExplanation } from "../interfaces/WordsDependencyExplanation";
+import {FinalCrossWordsAssociation} from "../components/FinalCrossWordsAssociation";
+import {WordAnalysis} from "../interfaces/WordAnalysis";
+import React, {useState} from 'react';
+import {Word} from "../interfaces/Word";
+import {WordCategory} from "../interfaces/WordCategory";
+import {WordsDependencyExplanation} from "../interfaces/WordsDependencyExplanation";
+import {AnalysisHistory} from "../components/AnalysisHistory";
 
 export default function Home() {
-    const [analysis, setAnalysis] = useState<WordAnalysis>(WordAnalysis.createEmpty())
+    const [analysisHistory, setAnalysisHistory] = useState<WordAnalysis[]>((): WordAnalysis[] => {
+        const allLocalStorageItems = {...localStorage};
+        const allAnalysisHistoryValues = Object.values(allLocalStorageItems);
+
+
+        return allAnalysisHistoryValues.reduce((acc: WordAnalysis[], currentValue: string) => {
+            try {
+                const parsedValue = JSON.parse(currentValue);
+                if (Array.isArray(parsedValue)) {
+                    acc.push(...parsedValue);
+                } else {
+                    acc.push(parsedValue);
+                }
+            } catch (error) {
+                console.error('Error parsing localStorage item:', error);
+            }
+            return acc;
+        }, []);
+    });
+    
+    const [analysis, setAnalysis] = useState<WordAnalysis>(() => {
+        if (analysisHistory.length > 0) {
+            return analysisHistory[0];
+        } else {
+            return WordAnalysis.createEmpty();
+        }
+    })
+
+    const onStartNewAnalysis = () => {
+        onStartAnalysis(WordAnalysis.createEmpty());
+    }
     const onStartAnalysis = (analysis: WordAnalysis) => {
         setAnalysis(analysis);
     };
@@ -154,9 +185,38 @@ export default function Home() {
                 wordsDependency: [...analysis.wordsDependency].map(wd => wd.mainWordId === wordId ? { ...wd, explanation: explanation } : wd)
             }
         )
-
     }
 
+    const persistUpdatedAnalysis = (updatedAnalysis: WordAnalysis): void => {
+        localStorage.setItem(updatedAnalysis.id, JSON.stringify(updatedAnalysis));
+        let found = false;
+        const updatedList = analysisHistory.map((ah) => {
+            if (ah.id === updatedAnalysis.id) {
+                found = true;
+                return updatedAnalysis;
+            } else {
+                return ah;
+            }
+        });
+        if (found)
+            setAnalysisHistory(updatedList);
+        else {
+            setAnalysisHistory([updatedAnalysis, ...updatedList])
+        }
+    };
+    
+    const onUseTextAsFinalIdea = (text: string) :void => {
+        if (text.length === 0) 
+            return;
+        
+        const updatedAnalysis = {
+            ...analysis,
+            finalIdea: text
+        };
+        
+        setAnalysis(updatedAnalysis);
+        persistUpdatedAnalysis(updatedAnalysis)
+    }
 
     const selectedWords = getWordsForCurrrentRound(analysis.round, analysis.selectedWords);
     const wordsToAssociate = new Map<number, Word>();
@@ -166,9 +226,20 @@ export default function Home() {
 
     return (
         <>
-            <TextInput onStartAnalysis={onStartAnalysis} initialAnalysisData={analysis} />
-            <WordsSelector initialWordsToSelect={analysis.words} key={analysis.words.length} onInitialWordsSelected={onInitialWordsSelected} />
+            <AnalysisHistory 
+                analysisHistory={analysisHistory} 
+                onStartNewAnalysis={onStartNewAnalysis}
+                key={analysisHistory.length}/>
+            <TextInput 
+                onStartAnalysis={onStartAnalysis} 
+                initialAnalysisData={analysis} 
+                key={`ti${analysis.id}`} />
+            <WordsSelector 
+                initialWordsToSelect={analysis.words}
+                key={`ws${analysis.id}${analysis.words.length}`} 
+                onInitialWordsSelected={onInitialWordsSelected} />
             <WordsInitialAssociation
+                key={`wia${analysis.id}`}
                 round={analysis.round}
                 wordsToAssociate={selectedWords}
                 onAssociationSelected={onAssociationSelected}
@@ -176,11 +247,17 @@ export default function Home() {
                 onWordCategorySelected={onWordCategorySelected}
                 onNextRoundClick={onNextRoundClick}
                 onGenerateCrossWordsAssocationsClick={onGenerateCrossWordsAssocationsClick} />
-            <CrossWordsAssociation 
+            <CrossWordsAssociation
+                key={`cwa${analysis.id}`}
                 wordsDependency={analysis.wordsDependency} 
                 wordsToAssociate={wordsToAssociate} 
-                onExplanationChange={onExplanationChange} />
-            <FinalCrossWordsAssociation />
+                onExplanationChange={onExplanationChange}
+                onUseTextAsFinalIdea={onUseTextAsFinalIdea}/>
+            <FinalCrossWordsAssociation
+                finalIdea={analysis.finalIdea} 
+                onUpdateFinalIdea={onUseTextAsFinalIdea}
+                key={`fcwa${analysis.id}${analysis.finalIdea.length}`}
+                 />
         </>
     );
 

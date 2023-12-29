@@ -7,7 +7,8 @@ const CrossWordsAssociation: React.FC<{
   wordsDependency: WordsDependencyExplanation[];
   wordsToAssociate: Map<number, Word>;
   onExplanationChange: (wordId: number, explanation: string) => void;
-}> = ({ wordsDependency, wordsToAssociate, onExplanationChange }) => {
+  onUseTextAsFinalIdea: (text: string) => void;
+}> = ({ wordsDependency, wordsToAssociate, onExplanationChange, onUseTextAsFinalIdea}) => {
   const [activeAccordion, setActiveAccordion] = useState<number>(wordsDependency?.[0]?.mainWordId || 0);
 
   const handleAccordionClick = (accordionNumber: number) => {
@@ -36,6 +37,7 @@ const CrossWordsAssociation: React.FC<{
               isAccordionOpen={isAccordionOpen}
               handleAccordionClick={handleAccordionClick}
               onExplanationChange={onExplanationChange}
+              onUseTextAsFinalIdea={onUseTextAsFinalIdea}
             />
           )
         })}
