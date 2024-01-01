@@ -98,6 +98,15 @@ export default function Home() {
         )
     }
 
+    const onRenameWord = (changedWord: Word, newName: string): void => {
+        if (!newName)
+            return;
+        setAnalysis({
+            ...analysis,
+            selectedWords: selectedWords.map(existingWord => existingWord.id === changedWord.id ? {...existingWord, value:newName} : existingWord)
+        })
+    }
+
     const onNewWordAdded = (text: string, category: WordCategory) => {
         let maxWord: Word | null = null;
 
@@ -246,7 +255,8 @@ export default function Home() {
                 onNewWordAdded={onNewWordAdded}
                 onWordCategorySelected={onWordCategorySelected}
                 onNextRoundClick={onNextRoundClick}
-                onGenerateCrossWordsAssocationsClick={onGenerateCrossWordsAssocationsClick} />
+                onGenerateCrossWordsAssocationsClick={onGenerateCrossWordsAssocationsClick}
+                onRenameWord={onRenameWord}/>
             <CrossWordsAssociation
                 key={`cwa${analysis.id}`}
                 wordsDependency={analysis.wordsDependency} 

@@ -1,8 +1,8 @@
 import { useState, ChangeEvent } from 'react';
 import { Word } from '../interfaces/Word';
-import WordAssociation from './Shared/WordAssociation';
 import WordCategorySelector from './Shared/WordCategorySelector';
 import { WordCategory } from '../interfaces/WordCategory';
+import WordAssociation from "./WordAssociation";
 
 const WordsInitialAssociation: React.FC<{
   round: number,
@@ -12,7 +12,8 @@ const WordsInitialAssociation: React.FC<{
   onWordCategorySelected: (word: Word, wordCategory: WordCategory) => void;
   onNextRoundClick: () => void;
   onGenerateCrossWordsAssocationsClick: () => void;
-}> = ({ round, wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected, onNextRoundClick, onGenerateCrossWordsAssocationsClick }) => {
+  onRenameWord: (word: Word, newName: string) => void;
+}> = ({ round, wordsToAssociate, onAssociationSelected, onNewWordAdded, onWordCategorySelected, onNextRoundClick, onGenerateCrossWordsAssocationsClick, onRenameWord }) => {
   //todo fix this
   const [alphabeticalSorting, setAlphabeticalSorting] = useState(false);
   const [currectCategory, setCurrentCategory] = useState(WordCategory.Nouns);
@@ -38,11 +39,11 @@ const WordsInitialAssociation: React.FC<{
     onNewWordAdded(newWordText, currectCategory);
     setNewWordText('');
   }
-
+  
   const onFilterByCategoryChanged = (category: WordCategory) => {
     setCurrentCategory(category);
   }
-
+  
   return (
     <div className="container">
       <div className="row mb-3">
@@ -73,7 +74,8 @@ const WordsInitialAssociation: React.FC<{
                     word={wordToAssociate}
                     key={wordToAssociate.id}
                     onAssociationSelected={onAssociationSelected}
-                    onWordCategorySelected={onWordCategorySelected} />
+                    onWordCategorySelected={onWordCategorySelected}
+                    onRenameWord={onRenameWord}/>
                 )}
               </ul>
             </div>
